@@ -1,0 +1,20 @@
+--Code by Magnus Tymoteus, all rights reserved
+AddCSLuaFile("cl_init.lua")
+AddCSLuaFile("shared.lua")
+include("shared.lua")
+function ENT:Initialize()
+    self:SetModel("models/gman_high.mdl")
+    self:SetSequence(2)
+    self:SetHullType(HULL_HUMAN)
+    self:SetHullSizeNormal()
+    self:SetNPCState(NPC_STATE_SCRIPT)
+    self:SetSolid(SOLID_BBOX)
+    self:CapabilitiesAdd(CAP_ANIMATEDFACE)
+    self:SetUseType(SIMPLE_USE)
+    self:DropToFloor()
+end
+function ENT:Use(act, cal)
+    util.AddNetworkString("dm_used")
+    net.Start("dm_used")
+    net.Send(cal)
+end
