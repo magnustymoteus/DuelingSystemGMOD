@@ -1,4 +1,4 @@
---Code by Magnus Tymoteus, all rights reserved
+--Code by Patryk Pilichowski, all rights reserved
 protectedcooldown = false
 function cutstring(string)
 	if(string:sub(#string) == "\n") then
@@ -7,6 +7,14 @@ function cutstring(string)
 	return string
 end
 function duelnet() 
+net.Receive("playerDisconnected", function(len) 
+	requester = net.ReadInt(3)
+	if(requester == 1) then
+		chat.AddText("The person you wanted a duel with disconnected!")
+	elseif(requester == 0) then
+		chat.AddText("The person that wanted to duel with you disconnected!")
+	end
+end)
 net.Receive("protectedAttacked", function(len) 
 	if(protectedcooldown == false) then
 	chat.AddText("The player you're attacking is in a duel or on your team!")
@@ -21,7 +29,6 @@ net.Receive("duelanswer", function(len)
 	elseif(answer == 0) then
 		chat.AddText("Your duel was rejected!")
 	end
-
 end)
 net.Receive("duelreceive", function(len) 
 	nick = net.ReadString()

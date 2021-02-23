@@ -1,10 +1,11 @@
---Code by Magnus Tymoteus, all rights reserved
+--Code by Patryk Pilichowski, all rights reserved
 util.AddNetworkString("duel")
 util.AddNetworkString("duelreceive")
 util.AddNetworkString("duelanswer")
 util.AddNetworkString("duelcount")
 util.AddNetworkString("duelstart")
 util.AddNetworkString("protectedAttacked")
+util.AddNetworkString("playerDisconnected")
 duel_startTime = 5
 function cutstring(string)
 	if(string:sub(#string) == "\n") then
@@ -44,18 +45,37 @@ hook.Add("PlayerSay", "playerSay01", function(player, text, teamchat)
 		end
 	net.Send(player)
 	if(request == true) then
+		targets = {player, eyetrace.Entity}
 		net.Start("duelreceive")
 		net.WriteString(player:Nick())
 		net.Send(eyetrace.Entity)
+		hook.Add("PlayerDisconnected", "player_disc", function(disc_player) 
+			net.Start("playerDisconnected")
+			if(disc_player == eyetrace.Entity) then
+				net.WriteInt(1, 3)
+				net.Send(player)
+			elseif(disc_player == player) then
+				net.WriteInt(0, 3)
+				net.Send(eyetrace.Entity)
+			end
+			targets = {}
+			hook.Remove("player_disc")
+		end)
 		hook.Add("PlayerSay", "playerSay02", function(ply01, text, teamchat) 
 			if(text == "/daccept") then
-				targets = {player, eyetrace.Entity}
+				previous_status = {player:Health(), player:Armor(), eyetrace.Entity:Health(), eyetrace.Entity:Armor()}
 				net.Start("duelanswer")
 				net.WriteInt(1,3)
 				net.Send(player)
 				hook.Remove("PlayerSay", "playerSay02")
 				eyetrace.Entity:Freeze(true)
 				player:Freeze(true)
+				eyetrace.Entity:SetHealth(100)
+				eyetrace.Entity:SetArmor(0)
+				eyetrace.Entity:SetEyeAngles((player:GetBonePosition(player:LookupBone("ValveBiped.Bip01_Head1"))-eyetrace.Entity:GetShootPos()):Angle())
+				player:SetHealth(100)
+				player:SetArmor(0)
+				player:SetEyeAngles((eyetrace.Entity:GetBonePosition(eyetrace.Entity:LookupBone("ValveBiped.Bip01_Head1"))-player:GetShootPos()):Angle())
 				for i=1, 2 do 
 					net.Start("duelcount")
 					net.WriteInt(duel_startTime, 11)
