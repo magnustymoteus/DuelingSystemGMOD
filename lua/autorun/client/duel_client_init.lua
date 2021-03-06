@@ -1,4 +1,4 @@
---Code by Patryk Pilichowski, all rights reserved
+--Code by Patryk Pilichowski (Magnus Tymoteus), all rights reserved
 protectedcooldown = false
 function cutstring(string)
 	if(string:sub(#string) == "\n") then
@@ -7,6 +7,15 @@ function cutstring(string)
 	return string
 end
 function duelnet() 
+net.Receive("duelEnd", function(len) 
+	died = net.ReadInt(3)
+	opponent = net.ReadString()
+	if(died == 0) then
+		chat.AddText("You lost the duel with "..opponent.."!")
+	elseif(died == 1) then
+		chat.AddText("You won the duel with "..opponent.."!")
+	end
+end)
 net.Receive("playerDisconnected", function(len) 
 	requester = net.ReadInt(3)
 	if(requester == 1) then

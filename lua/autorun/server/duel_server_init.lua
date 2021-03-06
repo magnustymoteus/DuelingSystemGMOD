@@ -6,6 +6,7 @@ util.AddNetworkString("duelcount")
 util.AddNetworkString("duelstart")
 util.AddNetworkString("protectedAttacked")
 util.AddNetworkString("playerDisconnected")
+util.AddNetworkString("duelEnd")
 duel_startTime = 5
 function cutstring(string)
 	if(string:sub(#string) == "\n") then
@@ -96,6 +97,32 @@ hook.Add("PlayerSay", "playerSay01", function(player, text, teamchat)
 							net.Send(attacker)
 							return false
 						end
+					end)
+					hook.Add("PlayerDeath", "deathInDuel", function(victim, inflictor, attacker) 
+						if(victim == player) and (attacker == eyetrace.Entity) then
+							for i=0, 1 do
+								net.Start("duelEnd")
+								net.WriteInt(i, 3)
+								net.WriteString(targets[(math.abs(i)*-1)+2]:Nick())
+								net.Send(targets[i+1])
+								eyetrace.Entity:SetHealth(previous_status[3])
+								eyetrace.Entity:SetArmor(previous_status[4])
+							end
+						elseif(victim == eyetrace.Entity) and (attacker == player) then
+							for i=0, 1 do
+								net.Start("duelEnd")
+								net.WriteInt((math.abs(i)*-1)+1, 3)
+								net.WriteString(targets[(math.abs(i)*-1)+2]:Nick())
+								net.Send(targets[i+1])
+								player:SetHealth(previous_status[1])
+								player:SetArmor(previous_status[2])
+							end
+						end
+						previous_status = {}
+						targets = {}
+						hook.Remove("PlayerDisconnected", "player_disc")
+						hook.Remove("PlayerShouldTakeDamage", "DuelProtection")
+						hook.Remove("PlayerDeath", "deathInDuel")
 					end)
 				end)
 			elseif(text == "/dreject") then
