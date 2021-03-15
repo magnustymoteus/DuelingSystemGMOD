@@ -50,7 +50,12 @@ net.Receive("duel", function(len)
 	if(status == 1) then
 		if(alive == 1) then
 			if(eyetrace == 1) then
-				chat.AddText("Duel request sent!")
+				induel = net.ReadInt(3)
+				if(induel == 1) then
+					chat.AddText("You are already dueling that player!")
+				elseif(induel == 0) then
+					chat.AddText("Duel request sent!")
+				end
 			elseif(eyetrace == 0) then
 				chat.AddText("You must look at a player to request a duel!")
 			end
