@@ -12,8 +12,10 @@ net.Receive("duelEnd", function(len)
 	opponent = net.ReadString()
 	if(died == 0) then
 		chat.AddText("You lost the duel with "..opponent.."!")
+		notification.AddLegacy("You lost the duel with "..opponent.."!", NOTIFY_ERROR, 2)
 	elseif(died == 1) then
 		chat.AddText("You won the duel with "..opponent.."!")
+		notification.AddLegacy("You won the duel with "..opponent.."!", NOTIFY_GENERIC, 2)
 	end
 end)
 net.Receive("playerDisconnected", function(len) 
@@ -34,9 +36,9 @@ end)
 net.Receive("duelanswer", function(len)
 	answer = net.ReadInt(3)
 	if(answer == 1) then
-		chat.AddText("Your duel was accepted!")
+		notification.AddLegacy("Your duel was accepted!", NOTIFY_GENERIC, 2)
 	elseif(answer == 0) then
-		chat.AddText("Your duel was rejected!")
+		notification.AddLegacy("Your duel was rejected!", NOTIFY_ERROR, 2)
 	end
 end)
 net.Receive("duelreceive", function(len) 
@@ -52,18 +54,18 @@ net.Receive("duel", function(len)
 			if(eyetrace == 1) then
 				induel = net.ReadInt(3)
 				if(induel == 1) then
-					chat.AddText("You are already dueling that player!")
+					notification.AddLegacy("You are already dueling that player!", NOTIFY_ERROR, 2)
 				elseif(induel == 0) then
-					chat.AddText("Duel request sent!")
+					notification.AddLegacy("Duel request sent!", NOTIFY_GENERIC, 2)
 				end
 			elseif(eyetrace == 0) then
-				chat.AddText("You must look at a player to request a duel!")
+				notification.AddLegacy("You must look at a player to request a duel!", NOTIFY_ERROR, 2)
 			end
 		elseif(alive == 0) then
-			chat.AddText("You cannot request a duel while being dead!")
+			notification.AddLegacy("You cannot request a duel while being dead!", NOTIFY_ERROR, 2)
 			end
 	elseif(status == 0) then
-		chat.AddText("Dueling is currently disabled!")
+		notification.AddLegacy("Dueling is currently disabled!", NOTIFY_ERROR, 2)
 		end
 	end)
 net.Receive("duelcount", function(len) 
