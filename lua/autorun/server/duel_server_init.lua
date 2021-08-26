@@ -1,4 +1,4 @@
---Code by Patryk Pilichowski, all rights reserved
+--Code by Magnus Tymoteus, all rights reserved
 util.AddNetworkString("duel")
 util.AddNetworkString("duelreceive")
 util.AddNetworkString("duelanswer")
