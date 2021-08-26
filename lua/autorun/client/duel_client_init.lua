@@ -1,4 +1,3 @@
---Code by Magnus Tymoteus, all rights reserved
 protectedcooldown = false
 function cutstring(string)
 	if(string:sub(#string) == "\n") then
